@@ -16,8 +16,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class StripePaymentGateWay implements PaymentGateway {
 
-    @Value("${stripe.sercret_key}")
+    @Value("${stripe.secret_key}")
     private String stripeSecretKey;
+
+    // Where Stripe sends the customer after they pay.
+    @Value("${payment.success_redirect_url}")
+    private String successRedirectUrl;
 
     @Override
     public String generatePaymentLink(Long amount) throws StripeException {
@@ -51,7 +55,7 @@ public class StripePaymentGateWay implements PaymentGateway {
                                         .setType(PaymentLinkCreateParams.AfterCompletion.Type.REDIRECT)
                                         .setRedirect(
                                                 PaymentLinkCreateParams.AfterCompletion.Redirect.builder()
-                                                        .setUrl("https://scaler.com")
+                                                        .setUrl(successRedirectUrl)
                                                         .build()
                                         )
                                         .build()
